@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Beautiful! 💙</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Background Music (MP3 File) -->
+    <audio id="bgMusic" loop>
+        <source src="assets/background-music.mp3" type="audio/mpeg">
+        <source src="assets/background-music.wav" type="audio/wav">
+        <!-- Put your background music file in the 'assets' folder -->
+    </audio>
+    
+    <!-- Personal Audio Message -->
+    <audio id="personalAudio" controls style="display: none;">
+        <source src="assets/vn.mp3" type="audio/mpeg">
+        <source src="assets/your-voice-message.wav" type="audio/wav">
+        <!-- Put your recorded audio file in the 'assets' folder -->
+    </audio>
+
+    <!-- Music Control Button -->
+    <button class="music-control" id="musicToggle" onclick="toggleBackgroundMusic()">🎵</button>
+
+    <div class="hearts" id="hearts"></div>
+
+    <!-- Section 1: Hero -->
+    <section class="section hero">
+        <h1>Happy Birthday Beautiful! 🎉</h1>
+        <p>Today is all about celebrating you!</p>
+        <div class="birthday-cake" onclick="celebrateCake()">🎂</div>
+        <div class="scroll-indicator">👇</div>
+    </section>
+
+    <!-- Section 2: Affirmations -->
+    <section class="section affirmations">
+        <h2>You Are Amazing! ✨</h2>
+        <div class="carousel">
+            <div class="affirmation active">
+                You light up every room you enter with your beautiful smile 😊
+            </div>
+            <div class="affirmation">
+                Your kindness and compassion inspire everyone around you 💕
+            </div>
+            <div class="affirmation">
+                You are stronger than you know and more loved than you realize 💪
+            </div>
+            <div class="affirmation">
+                Your dreams are valid and your potential is limitless 🌟
+            </div>
+            <div class="affirmation">
+                You make this world a better place just by being in it 🌍
+            </div>
+            <div class="carousel-nav">
+                <span class="nav-dot active" onclick="showAffirmation(0)"></span>
+                <span class="nav-dot" onclick="showAffirmation(1)"></span>
+                <span class="nav-dot" onclick="showAffirmation(2)"></span>
+                <span class="nav-dot" onclick="showAffirmation(3)"></span>
+                <span class="nav-dot" onclick="showAffirmation(4)"></span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: Photo Gallery -->
+    <section class="section gallery-section">
+        <h2>Beautiful Memories 📸</h2>
+        <div class="gallery-container">
+            <div class="photo-frame">
+                <div class="photo-display" id="photoDisplay">
+                    📷
+                </div>
+                <span class="gallery-counter" id="photoCounter">1 / 5</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4: Audio Message (Vinyl Player) -->
+    <section class="section audio-section">
+        <h2>A Special Voice Message 🎙️</h2>
+        <div class="vinyl-player">
+            <div class="vinyl-record" id="vinylRecord" onclick="togglePersonalAudio()"></div>
+            <div class="audio-controls">
+                <button class="audio-btn" id="audioPlayBtn" onclick="togglePersonalAudio()">▶️</button>
+            </div>
+            <div class="audio-message">
+                Click the vinyl record to hear my special message for you! 💕
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 5: Celebration -->
+    <section class="section celebration">
+        <h2>Let's Celebrate You! 🎉</h2>
+        <div class="balloons">
+            <div class="balloon" onclick="popBalloon(this)"></div>
+            <div class="balloon" onclick="popBalloon(this)"></div>
+            <div class="balloon" onclick="popBalloon(this)"></div>
+            <div class="balloon" onclick="popBalloon(this)"></div>
+        </div>
+        <div class="final-message">
+            <p>Thank you for being the incredible person you are. Your birthday is a celebration of all the wonderful things about you, and I'm so lucky to be part of your journey. Here's to another year of laughter, love, and beautiful moments together. I love you so much! 🥳💙✨</p>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>
