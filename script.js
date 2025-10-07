@@ -8,6 +8,13 @@ const vinylRecord = document.getElementById('vinylRecord');
 let isBgMusicPlaying = false;
 let isPersonalAudioPlaying = false;
 
+// ADJUSTABLE SETTINGS: Background music volume levels
+const NORMAL_BG_VOLUME = 0.7;  // Normal volume (0.0 to 1.0) - Change this!
+const LOWERED_BG_VOLUME = 0.2; // Volume when voice note plays - Change this!
+
+// Set initial volume
+bgMusic.volume = NORMAL_BG_VOLUME;
+
 // Background music control (MP3 File)
 function toggleBackgroundMusic() {
     if (isBgMusicPlaying) {
@@ -70,8 +77,20 @@ function showMusicPrompt() {
     `;
     document.head.appendChild(style);
     
-    prompt.onclick = function() {
-        toggleBackgroundMusic();
+    prompt.onclick = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        // Force enable music
+        if (!isBgMusicPlaying) {
+            bgMusic.play().then(() => {
+                musicToggle.innerHTML = '🎵';
+                musicToggle.classList.remove('muted');
+                isBgMusicPlaying = true;
+                console.log('Background music started from prompt');
+            }).catch(err => {
+                console.log('Still failed:', err);
+            });
+        }
         prompt.remove();
         style.remove();
     };
@@ -97,15 +116,29 @@ function togglePersonalAudio() {
         vinylRecord.classList.remove('playing');
         isPersonalAudioPlaying = false;
         
-        // Resume background music if it was playing
-        if (isBgMusicPlaying) {
-            bgMusic.play();
-        }
         console.log('Personal audio stopped');
-    } else {
-        // Mute background music when personal audio plays
+        console.log('BG Music playing?', isBgMusicPlaying);
+        
+        // Restore background music to normal volume
         if (isBgMusicPlaying) {
-            bgMusic.pause();
+            console.log('Fading BG music back to normal volume:', NORMAL_BG_VOLUME);
+            fadeVolume(bgMusic, bgMusic.volume, NORMAL_BG_VOLUME, 500);
+        }
+    } else {
+        console.log('Starting personal audio');
+        console.log('BG Music currently playing?', isBgMusicPlaying);
+        console.log('BG Music current volume:', bgMusic.volume);
+        
+        // Lower background music volume when personal audio plays
+        // KEEP IT PLAYING - just lower the volume
+        if (isBgMusicPlaying) {
+            console.log('Fading BG music to low volume:', LOWERED_BG_VOLUME);
+            fadeVolume(bgMusic, bgMusic.volume, LOWERED_BG_VOLUME, 500);
+            // Make sure it's still playing
+            if (bgMusic.paused) {
+                console.log('BG music was paused, resuming...');
+                bgMusic.play();
+            }
         }
         
         personalAudio.play().catch(e => {
@@ -116,8 +149,29 @@ function togglePersonalAudio() {
         audioPlayBtn.classList.add('playing');
         vinylRecord.classList.add('playing');
         isPersonalAudioPlaying = true;
-        console.log('Personal audio playing');
     }
+}
+
+// Smooth volume fade function
+function fadeVolume(audioElement, startVol, endVol, duration) {
+    console.log(`Fading volume from ${startVol} to ${endVol} over ${duration}ms`);
+    
+    const steps = 20;
+    const stepTime = duration / steps;
+    const volumeStep = (endVol - startVol) / steps;
+    let currentStep = 0;
+    
+    const fadeInterval = setInterval(() => {
+        currentStep++;
+        const newVolume = startVol + (volumeStep * currentStep);
+        audioElement.volume = Math.max(0, Math.min(1, newVolume));
+        
+        if (currentStep >= steps) {
+            clearInterval(fadeInterval);
+            audioElement.volume = endVol;
+            console.log('Fade complete. Final volume:', audioElement.volume);
+        }
+    }, stepTime);
 }
 
 // Handle personal audio end
@@ -127,11 +181,17 @@ personalAudio.addEventListener('ended', function() {
     vinylRecord.classList.remove('playing');
     isPersonalAudioPlaying = false;
     
-    // Resume background music if it was playing
+    console.log('Personal audio ended, restoring BG music volume');
+    
+    // Restore background music to normal volume
     if (isBgMusicPlaying) {
-        bgMusic.play();
+        fadeVolume(bgMusic, bgMusic.volume, NORMAL_BG_VOLUME, 500);
+        // Make sure it's still playing
+        if (bgMusic.paused) {
+            console.log('BG music was paused, resuming...');
+            bgMusic.play();
+        }
     }
-    console.log('Personal audio ended');
 });
 
 // Gallery functionality - AUTOMATIC SLIDESHOW
